@@ -21,9 +21,10 @@ class MainActivity : BaseActivity() {
     override fun initData() {
         getSign()
         SignatureUtils.get().signatureVerify(this)
-
-        // Example of a call to a native method
-        showText.text = stringFromJNI()
+        val stringFromJNI = stringFromJNI()
+        val encrypt = SignatureUtils.get().encrypt(stringFromJNI)
+        val decrypt = SignatureUtils.get().decrypt(encrypt)
+        showText.text = "原始字符串：$stringFromJNI\n加密后字符串：$encrypt\n解密后字符串：$decrypt"
         search.setOnClickListener {
             //启动一个协程
             myJob = launch {

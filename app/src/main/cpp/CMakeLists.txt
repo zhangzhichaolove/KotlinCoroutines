@@ -17,7 +17,17 @@ add_library( # Sets the name of the library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        peakchao.cpp)
+        peakchao.cpp
+        aes.h
+        aes.c
+        hex_utils.h
+        hex_utils.c
+        tools.h
+        tools.cpp
+        aes_utils.h
+        aes_utils.c
+        foo_tools.cpp
+        )
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by

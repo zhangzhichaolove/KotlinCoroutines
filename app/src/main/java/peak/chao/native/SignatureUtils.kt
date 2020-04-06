@@ -11,6 +11,12 @@ class SignatureUtils private constructor() {
      */
     external fun signatureVerify(context: Context)
 
+    // AES加密, CBC, PKCS5Padding
+    external fun encrypt(str: String?): String?
+
+    // AES解密, CBC, PKCS5Padding
+    external fun decrypt(str: String?): String?
+
     companion object {
 
         private var instance: SignatureUtils? = null

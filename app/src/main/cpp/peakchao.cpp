@@ -2,6 +2,9 @@
 #include <string>
 #include <android/log.h>
 
+#include "aes_utils.h"
+#include "tools.h"
+
 //校验签名
 static int is_verify = 0;
 static char *PACKAGE_NAME = "com.chao.kotlincoroutines";
@@ -18,6 +21,7 @@ Java_com_chao_kotlincoroutines_MainActivity_stringFromJNI(
     }
     return env->NewStringUTF(hello.c_str());
 }
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_peak_chao_native_SignatureUtils_signatureVerify(JNIEnv *env, jobject thiz, jobject context) {
@@ -60,3 +64,36 @@ Java_peak_chao_native_SignatureUtils_signatureVerify(JNIEnv *env, jobject thiz, 
     // 签名认证成功
     is_verify = 1;
 }
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_peak_chao_native_SignatureUtils_encrypt(JNIEnv *env, jobject thiz, jstring str_) {
+    if (str_ == nullptr) return nullptr;
+
+    const char *str = env->GetStringUTFChars(str_, JNI_FALSE);
+    char *result = AES_128_CBC_PKCS5_Encrypt(str);
+
+    env->ReleaseStringUTFChars(str_, str);
+
+    jstring jResult = getJString(env, result);
+    free(result);
+
+    return jResult;
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_peak_chao_native_SignatureUtils_decrypt(JNIEnv *env, jobject thiz, jstring str_) {
+    if (str_ == nullptr) return nullptr;
+
+    const char *str = env->GetStringUTFChars(str_, JNI_FALSE);
+    char *result = AES_128_CBC_PKCS5_Decrypt(str);
+
+    env->ReleaseStringUTFChars(str_, str);
+
+    jstring jResult = getJString(env, result);
+    free(result);
+
+    return jResult;
+}
+
