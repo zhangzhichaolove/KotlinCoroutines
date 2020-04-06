@@ -1,7 +1,8 @@
 package com.chao.kotlincoroutines
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.content.pm.Signature
 import android.util.Log
 import android.view.View
 import com.chao.kotlincoroutines.api.GitHubApi
@@ -11,11 +12,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import peak.chao.native.SignatureUtils
+
 
 class MainActivity : BaseActivity() {
     var myJob: Job? = null
 
     override fun initData() {
+        getSign()
+        SignatureUtils.get().signatureVerify(this)
+
         // Example of a call to a native method
         showText.text = stringFromJNI()
         search.setOnClickListener {
@@ -57,6 +63,18 @@ class MainActivity : BaseActivity() {
         return R.layout.activity_main
     }
 
+    fun getSign() {
+        var packageInfo: PackageInfo? = null
+        try {
+            packageInfo =
+                packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+        val signatures: Array<Signature> = packageInfo!!.signatures
+        Log.e("TAG", signatures[0].toCharsString())
+    }
+
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
@@ -66,7 +84,7 @@ class MainActivity : BaseActivity() {
     companion object {
         // Used to load the 'native-lib' library on application startup.
         init {
-            System.loadLibrary("native-lib")
+            System.loadLibrary("peakchao")
         }
     }
 }
